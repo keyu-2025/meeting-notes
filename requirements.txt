@@ -1,0 +1,32 @@
+# Meeting Notes - Python Dependencies
+#
+# IMPORTANT: Install torch BEFORE this file to get the CPU-only build:
+#
+#   pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+#   pip install -r requirements.txt
+#
+# Installing torch via this file will pull the default (CUDA) build (~2 GB).
+# CPU-only build is ~200 MB and is recommended for this project.
+
+# Audio capture
+sounddevice>=0.4.6
+PyAudio>=0.2.14
+numpy>=1.24.0
+
+# Speech transcription (SenseVoice via FunASR)
+funasr>=1.1.0
+# torch and torchaudio should already be installed (CPU-only) before this line
+torch>=2.0.0
+torchaudio>=2.0.0
+modelscope>=1.9.0
+huggingface_hub>=0.20.0
+safetensors>=0.4.0
+
+# HTTP client for Ollama API
+requests>=2.31.0
+
+# Utility
+scipy>=1.11.0
+
+# Packaging (build-time only, not needed at runtime)
+pyinstaller>=6.0.0
