@@ -16,16 +16,16 @@ from typing import Callable, Optional, Iterator
 OLLAMA_BASE_URL = "http://localhost:11434"
 DEFAULT_MODEL = "qwen2.5:7b"
 
-SYSTEM_PROMPT = """你是一个专业的会议助手。请根据提供的会议转录文本，生成结构化的会议纪要。
+SYSTEM_PROMPT = """你是一个专业的会议助手。请根据提供的会议转录文本,生成结构化的会议纪要。
 
-会议纪要应包含：
-1. **会议主题**：简要描述本次会议的核心议题
-2. **主要讨论内容**：按议题列出关键讨论点
-3. **重要决策**：列出会议中做出的决定
-4. **待办事项**：列出需要跟进的行动项（如有）
-5. **其他重要信息**：其他值得记录的内容
+会议纪要应包含:
+1. **会议主题**:简要描述本次会议的核心议题
+2. **主要讨论内容**:按议题列出关键讨论点
+3. **重要决策**:列出会议中做出的决定
+4. **待办事项**:列出需要跟进的行动项(如有)
+5. **其他重要信息**:其他值得记录的内容
 
-请用中文输出，语言简洁专业。如果转录内容不足以提取某个部分，请注明"无"。"""
+请用中文输出,语言简洁专业。如果转录内容不足以提取某个部分,请注明"无"。"""
 
 
 def check_ollama_available(base_url: str = OLLAMA_BASE_URL) -> tuple[bool, str]:
@@ -35,7 +35,7 @@ def check_ollama_available(base_url: str = OLLAMA_BASE_URL) -> tuple[bool, str]:
         resp.raise_for_status()
         return True, "Ollama 服务正常"
     except requests.exceptions.ConnectionError:
-        return False, "无法连接 Ollama（请确认已启动 ollama serve）"
+        return False, "无法连接 Ollama(请确认已启动 ollama serve)"
     except Exception as e:
         return False, f"Ollama 错误: {e}"
 
@@ -70,9 +70,9 @@ def summarize(
         Complete summary text
     """
     if not transcript.strip():
-        return "（转录内容为空，无法生成纪要）"
+        return "(转录内容为空,无法生成纪要)"
 
-    prompt = f"以下是会议转录内容：\n\n{transcript}\n\n请生成会议纪要："
+    prompt = f"以下是会议转录内容:\n\n{transcript}\n\n请生成会议纪要:"
 
     payload = {
         "model": model,
@@ -93,7 +93,7 @@ def summarize(
         else:
             return _summarize_blocking(payload, base_url)
     except requests.exceptions.ConnectionError:
-        return "错误：无法连接 Ollama 服务。请确认已运行 `ollama serve`。"
+        return "错误:无法连接 Ollama 服务。请确认已运行 `ollama serve`。"
     except Exception as e:
         return f"生成纪要失败: {e}"
 

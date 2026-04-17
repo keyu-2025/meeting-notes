@@ -288,7 +288,7 @@ class MeetingNotesApp(tk.Tk):
         devices = list_input_devices()
         self._devices = devices  # list[AudioDevice]
 
-        none_label = "（不捕获）"
+        none_label = "(不捕获)"
         mic_options = [none_label] + [str(d) for d in devices if not d.is_wasapi_loopback]
         loop_options = [none_label] + [str(d) for d in devices if d.is_wasapi_loopback]
 
@@ -343,10 +343,10 @@ class MeetingNotesApp(tk.Tk):
         if ok:
             self._model_lbl.configure(text="模型就绪", fg=COLORS["success"])
             self._rec_btn.configure(state="normal")
-            self._set_status("模型就绪，可开始录制")
+            self._set_status("模型就绪,可开始录制")
         else:
             self._model_lbl.configure(text="模型加载失败", fg=COLORS["error"])
-            self._set_status("模型加载失败，请检查依赖")
+            self._set_status("模型加载失败,请检查依赖")
 
     def _on_model_status(self, msg: str):
         self.after(0, lambda: self._model_lbl.configure(text=msg, fg=COLORS["warning"]))
@@ -388,7 +388,7 @@ class MeetingNotesApp(tk.Tk):
         loop_dev = self._get_selected_loop()
 
         if mic_dev is None and loop_dev is None:
-            messagebox.showwarning("提示", "请至少选择一个音频源（麦克风或系统音频）")
+            messagebox.showwarning("提示", "请至少选择一个音频源(麦克风或系统音频)")
             return
 
         # Reset state
@@ -455,7 +455,7 @@ class MeetingNotesApp(tk.Tk):
         self._save_btn.configure(state="normal" if self._transcript_lines else "disabled")
         self._mic_cb.configure(state="readonly")
         self._loop_cb.configure(state="readonly")
-        self._set_status(f"录制结束，共 {format_duration(self._elapsed_seconds)}")
+        self._set_status(f"录制结束,共 {format_duration(self._elapsed_seconds)}")
 
     # ──────────────────────────────────────────
     # Timer
@@ -501,7 +501,7 @@ class MeetingNotesApp(tk.Tk):
 
     def _on_generate(self):
         if not self._transcript_lines:
-            messagebox.showinfo("提示", "没有转录内容，无法生成纪要")
+            messagebox.showinfo("提示", "没有转录内容,无法生成纪要")
             return
 
         self._gen_btn.configure(state="disabled", text="生成中...")
@@ -550,7 +550,7 @@ class MeetingNotesApp(tk.Tk):
             start_time=start,
             end_time=end,
         )
-        messagebox.showinfo("保存成功", f"文件已保存：\n{filepath}")
+        messagebox.showinfo("保存成功", f"文件已保存:\n{filepath}")
         self._set_status(f"已保存: {filepath.name}")
 
     # ──────────────────────────────────────────

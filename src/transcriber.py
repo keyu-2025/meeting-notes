@@ -87,7 +87,7 @@ class Transcriber:
     def start(self) -> None:
         """Start the transcription consumer thread."""
         if self._model is None:
-            self._report_error("模型未加载，无法启动转录")
+            self._report_error("模型未加载,无法启动转录")
             return
         self._running = True
         self._start_time = time.time()

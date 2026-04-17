@@ -116,7 +116,7 @@ class SetupWizard(tk.Toplevel):
 
         tk.Label(
             self,
-            text="本向导将自动下载并配置所需组件，完成后即可正常使用。",
+            text="本向导将自动下载并配置所需组件,完成后即可正常使用。",
             font=FONT_S, bg=C["bg"], fg=C["text_dim"], wraplength=512, justify="left",
         ).pack(padx=24, anchor="w")
 
@@ -124,12 +124,12 @@ class SetupWizard(tk.Toplevel):
 
         # Steps
         steps = [
-            ("语音识别模型（SenseVoice）",
-             "下载 FunAudioLLM/SenseVoiceSmall（约 300 MB），仅首次需要"),
+            ("语音识别模型(SenseVoice)",
+             "下载 FunAudioLLM/SenseVoiceSmall(约 300 MB),仅首次需要"),
             ("Ollama 本地 LLM 服务",
              "检测 Ollama 安装状态并启动服务"),
-            ("会议总结模型（Qwen 2.5）",
-             "拉取 qwen2.5:3b 对话模型（约 2 GB），仅首次需要"),
+            ("会议总结模型(Qwen 2.5)",
+             "拉取 qwen2.5:3b 对话模型(约 2 GB),仅首次需要"),
         ]
         self._step_frames = []
         for title, subtitle in steps:
@@ -277,7 +277,7 @@ class SetupWizard(tk.Toplevel):
                     self._enable_done_button("开始使用")
             except Exception as exc:
                 self._log(f"[错误] 未预期的错误: {exc}")
-                self._enable_done_button("跳过，直接进入")
+                self._enable_done_button("跳过,直接进入")
 
         threading.Thread(target=_worker, daemon=True).start()
 
@@ -290,11 +290,11 @@ class SetupWizard(tk.Toplevel):
 
         # Check HuggingFace cache
         if self._sensevoice_is_cached():
-            self._log("[SenseVoice] 模型已缓存，跳过下载。")
-            self._set_step(idx, STEP_OK, "模型已就绪（使用本地缓存）", C["success"])
+            self._log("[SenseVoice] 模型已缓存,跳过下载。")
+            self._set_step(idx, STEP_OK, "模型已就绪(使用本地缓存)", C["success"])
             return
 
-        self._log("[SenseVoice] 未找到缓存，开始下载模型（约 300 MB）...")
+        self._log("[SenseVoice] 未找到缓存,开始下载模型(约 300 MB)...")
         self._set_step(idx, STEP_RUNNING, "正在下载 SenseVoice 模型...", C["warning"])
 
         ok, err = self._download_sensevoice()
@@ -304,7 +304,7 @@ class SetupWizard(tk.Toplevel):
         else:
             self._log(f"[SenseVoice] 下载失败: {err}")
             self._set_step(idx, STEP_WARN,
-                           f"下载失败（{err}），启动后将重试", C["warning"])
+                           f"下载失败({err}),启动后将重试", C["warning"])
 
     def _sensevoice_is_cached(self) -> bool:
         """Heuristic: check HuggingFace hub cache for the model blobs."""
@@ -358,7 +358,7 @@ class SetupWizard(tk.Toplevel):
         # Try to find the ollama executable
         ollama_exe = shutil.which("ollama")
         if ollama_exe:
-            self._log(f"[Ollama] 找到可执行文件: {ollama_exe}，尝试启动服务...")
+            self._log(f"[Ollama] 找到可执行文件: {ollama_exe},尝试启动服务...")
             self._set_step(idx, STEP_RUNNING, "正在启动 Ollama 服务...", C["warning"])
             self._start_ollama_serve()
             time.sleep(3)
@@ -366,11 +366,11 @@ class SetupWizard(tk.Toplevel):
                 self._log("[Ollama] 服务启动成功。")
                 self._set_step(idx, STEP_OK, "Ollama 服务已启动", C["success"])
                 return True
-            self._log("[Ollama] 服务未响应，请手动运行 ollama serve。")
+            self._log("[Ollama] 服务未响应,请手动运行 ollama serve。")
 
         # Not installed or not responding — guide user
-        self._log("[Ollama] 未检测到 Ollama，需要手动安装。")
-        self._set_step(idx, STEP_WARN, "请安装 Ollama 后点击"重新检测"", C["warning"])
+        self._log("[Ollama] 未检测到 Ollama,需要手动安装。")
+        self._set_step(idx, STEP_WARN, "请安装 Ollama 后点击[重新检测]", C["warning"])
 
         # Show a helper dialog (runs on GUI thread via event)
         installed = self._prompt_install_ollama()
@@ -379,7 +379,7 @@ class SetupWizard(tk.Toplevel):
             return True
 
         self._set_step(idx, STEP_WARN,
-                       "跳过 Ollama（可稍后安装，转录功能不受影响）", C["warning"])
+                       "跳过 Ollama(可稍后安装,转录功能不受影响)", C["warning"])
         return False
 
     def _ollama_ping(self) -> bool:
@@ -438,7 +438,7 @@ class SetupWizard(tk.Toplevel):
                 self._log("[Ollama] 连接成功！")
                 return True
 
-        self._log("[Ollama] 仍无法连接，跳过。")
+        self._log("[Ollama] 仍无法连接,跳过。")
         return False
 
     # ── Step 3 – Ollama model ──────────────────────────────────────────
@@ -455,13 +455,13 @@ class SetupWizard(tk.Toplevel):
             matched = next(
                 (m for m in existing
                  if any(m.startswith(p) for p in PREFERRED_MODELS)),
-                existing[0] if existing else "（未知）",
+                existing[0] if existing else "(未知)",
             )
             self._log(f"[Ollama] 已有适用模型: {matched}")
             self._set_step(idx, STEP_OK, f"已有模型: {matched}", C["success"])
             return
 
-        self._log(f"[Ollama] 开始拉取模型 {target}（约 2 GB，请稍候）...")
+        self._log(f"[Ollama] 开始拉取模型 {target}(约 2 GB,请稍候)...")
         self._set_step(idx, STEP_RUNNING, f"正在下载 {target}...", C["warning"])
         self._set_progress_mode("indeterminate")
 
@@ -472,7 +472,7 @@ class SetupWizard(tk.Toplevel):
         else:
             self._log(f"[Ollama] 拉取失败: {err}")
             self._set_step(idx, STEP_WARN,
-                           f"拉取失败，请手动运行: ollama pull {target}",
+                           f"拉取失败,请手动运行: ollama pull {target}",
                            C["warning"])
 
     def _list_ollama_models(self) -> list[str]:
@@ -533,7 +533,7 @@ class SetupWizard(tk.Toplevel):
             return
         if messagebox.askyesno(
             "跳过配置",
-            "配置尚未完成。\n\n跳过后，某些功能可能无法使用（语音识别、会议总结）。\n确定要跳过吗？",
+            "配置尚未完成。\n\n跳过后,某些功能可能无法使用(语音识别、会议总结)。\n确定要跳过吗？",
             parent=self,
         ):
             self._cancelled = True
@@ -577,10 +577,10 @@ class _OllamaInstallDialog(tk.Toplevel):
 
         msg = (
             "会议纪要功能需要 Ollama 提供本地 LLM 支持。\n\n"
-            "请按以下步骤操作：\n"
-            "  1. 点击下方按钮，前往 Ollama 官网下载安装程序\n"
-            "  2. 安装完成后，Ollama 会自动启动\n"
-            "  3. 回到本窗口，点击"我已安装，重新检测""
+            "请按以下步骤操作:\n"
+            "  1. 点击下方按钮,前往 Ollama 官网下载安装程序\n"
+            "  2. 安装完成后,Ollama 会自动启动\n"
+            "  3. 回到本窗口,点击[我已安装,重新检测]"
         )
         tk.Label(
             self, text=msg, font=("Segoe UI", 9),
@@ -600,7 +600,7 @@ class _OllamaInstallDialog(tk.Toplevel):
         ).pack(side="left")
 
         tk.Button(
-            btn_frame, text="我已安装，重新检测",
+            btn_frame, text="我已安装,重新检测",
             font=FONT_B, bg=C["accent"], fg="#ffffff",
             activebackground=C["accent_hover"], relief="flat", bd=0,
             padx=14, pady=6, cursor="hand2",

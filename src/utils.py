@@ -126,7 +126,7 @@ def save_meeting_notes(
         f"时长: {format_duration(duration_secs)}",
         "",
         "## 会议纪要",
-        summary if summary else "（未生成会议纪要）",
+        summary if summary else "(未生成会议纪要)",
         "",
         "## 完整转录",
     ]
