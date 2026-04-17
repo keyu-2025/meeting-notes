@@ -294,7 +294,7 @@ class SetupWizard(tk.Toplevel):
             self._set_step(idx, STEP_OK, "模型已就绪(使用本地缓存)", C["success"])
             return
 
-        self._log("[SenseVoice] 未找到缓存,开始下载模型(约 300 MB)...")
+        self._log("[SenseVoice] 未找到缓存,首次需要下载模型(约 300 MB),请耐心等待...")
         self._set_step(idx, STEP_RUNNING, "正在下载 SenseVoice 模型...", C["warning"])
 
         ok, err = self._download_sensevoice()
@@ -325,10 +325,19 @@ class SetupWizard(tk.Toplevel):
     def _download_sensevoice(self) -> tuple[bool, str]:
         """Trigger SenseVoice download by loading it via funasr."""
         try:
+            self._log("[SenseVoice] 正在加载 PyTorch (首次较慢,请耐心等待)...")
+            import torch
+            self._log(f"[SenseVoice] PyTorch {torch.__version__} 加载完成")
+
+            self._log("[SenseVoice] 正在加载 funasr 库...")
             from funasr import AutoModel
+            self._log("[SenseVoice] funasr 加载完成")
+
             models_dir = str(get_models_dir())
-            # Setting the cache dir env before import ensures funasr/HF use it
             os.environ.setdefault("MODELSCOPE_CACHE", models_dir)
+            os.environ.setdefault("HF_HOME", models_dir)
+
+            self._log("[SenseVoice] 正在下载/加载模型 (约 300 MB)...")
             AutoModel(
                 model=HF_MODEL_ID,
                 model_revision="v2.0.4",
@@ -340,6 +349,8 @@ class SetupWizard(tk.Toplevel):
             )
             return True, ""
         except Exception as exc:
+            import traceback
+            self._log(f"[SenseVoice] 错误详情: {traceback.format_exc()}")
             return False, str(exc)
 
     # ── Step 2 – Ollama ────────────────────────────────────────────────
