@@ -87,6 +87,19 @@ class MeetingNotesApp(tk.Tk):
         header = tk.Frame(self, bg=COLORS["bg"], pady=12)
         header.pack(fill="x", padx=20)
 
+        # Settings button (top right)
+        settings_btn = tk.Button(
+            header, text="⚙ 重新设置",
+            font=("Segoe UI", 9),
+            bg=COLORS["surface"], fg=COLORS["text_dim"],
+            activebackground=COLORS["surface2"],
+            activeforeground=COLORS["text"],
+            relief="flat", bd=0, padx=8, pady=2,
+            cursor="hand2",
+            command=self._reset_setup,
+        )
+        settings_btn.pack(side="right", anchor="ne")
+
         tk.Label(
             header, text="会议纪要", font=FONT_TITLE,
             bg=COLORS["bg"], fg=COLORS["accent"]
@@ -577,6 +590,23 @@ class MeetingNotesApp(tk.Tk):
 # ──────────────────────────────────────────────
 # Entry point
 # ──────────────────────────────────────────────
+
+
+    def _reset_setup(self):
+        """Re-run the setup wizard."""
+        from tkinter import messagebox
+        if messagebox.askyesno(
+            "重新设置",
+            "这将重新运行设置向导，重新下载模型。\n\n确定要重新设置吗？"
+        ):
+            from src.utils import get_setup_marker_path
+            marker = get_setup_marker_path()
+            if marker.exists():
+                marker.unlink()
+            self.destroy()
+            # Re-launch the app (which will show the wizard)
+            import sys, os
+            os.execv(sys.executable, [sys.executable] + sys.argv)
 
 def main():
     # First-run: show setup wizard (downloads SenseVoice, configures Ollama).
